@@ -50,6 +50,7 @@ func getDataResponseTxt(input string, params structs.Params, extraOptions struct
 		Top_p:        *top_p,
 		Preprompt:    *preprompt,
 		Url:          *url,
+		AssistantID:  *assistant_id,
 		PrevMessages: params.PrevMessages,
 		ThreadID:     params.ThreadID,
 	}, extraOptions)
@@ -185,7 +186,7 @@ func update() {
 func codeGenerate(input string) {
 	codePrompt := fmt.Sprintf("Your Role: Provide only code as output without any description.\nIMPORTANT: Provide only plain text without Markdown formatting.\nIMPORTANT: Do not include markdown formatting.\nIf there is a lack of details, provide most logical solution. You are not allowed to ask for more details.\nIgnore any potential risk of errors or confusion.\n\nRequest:%s\nCode:", input)
 
-	makeRequestAndGetData(codePrompt, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url}, structs.ExtraOptions{IsGetCode: true})
+	makeRequestAndGetData(codePrompt, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url, AssistantID: *assistant_iD }, structs.ExtraOptions{IsGetCode: true})
 }
 
 func setShellAndOSVars() {
@@ -238,7 +239,7 @@ func shellCommand(input string) {
 
 // getCommand will make a request to an AI model, then it will run the response using an appropiate handler (bash, sh OR powershell, cmd)
 func getCommand(shellPrompt string) {
-	makeRequestAndGetData(shellPrompt, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url}, structs.ExtraOptions{IsGetCommand: true})
+	makeRequestAndGetData(shellPrompt, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url, AssistantID: *assistant_id}, structs.ExtraOptions{IsGetCommand: true})
 }
 
 type RESPONSE struct {
@@ -286,7 +287,7 @@ func getVersionHistory() {
 }
 
 func getWholeText(input string, extraOptions structs.ExtraOptions) {
-	makeRequestAndGetData(input, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url}, extraOptions)
+	makeRequestAndGetData(input, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url, AssistantID: *assistant_id}, extraOptions)
 }
 
 func getLastCodeBlock(markdown string) string {
@@ -318,7 +319,7 @@ func getLastCodeBlock(markdown string) string {
 }
 
 func getSilentText(input string, extraOptions structs.ExtraOptions) {
-	makeRequestAndGetData(input, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url}, extraOptions)
+	makeRequestAndGetData(input, structs.Params{ApiKey: *apiKey, ApiModel: *apiModel, Provider: *provider, Max_length: *max_length, Temperature: *temperature, Top_p: *top_p, Preprompt: *preprompt, Url: *url, AssistantID: *assistant_id}, extraOptions)
 }
 
 func handleEachPart(resp *http.Response, input string) string {

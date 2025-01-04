@@ -19,12 +19,12 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 		os.Exit(0)
 	}
 
-	model := "gpt-3.5-turbo"
+	model := os.Getenv("OPENAI_MODEL")
 	if params.ApiModel != "" {
 		model = params.ApiModel
-	} else if envModel := os.Getenv("OPENAI_MODEL"); envModel != "" {
-		model = envModel
-	}
+	} //else if envModel := os.Getenv("OPENAI_MODEL"); envModel != "" {
+	//	model = envModel
+	//}
 
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if params.ApiKey != "" {
@@ -34,6 +34,11 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 	url := params.Url
 	if os.Getenv("OPENAI_URL") != "" {
 		url = os.Getenv("OPENAI_URL")
+	}
+
+	assistant_id := "asst_GHDfhv0nft8d6MAEWVgCGsr3"
+	if os.Getenv("OPENAI_ASSISTANT") != "" {
+		assistant_id = os.Getenv("OPENAI_ASSISTANT")
 	}
 
 	safeInput, _ := json.Marshal(input)
@@ -48,10 +53,11 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 			}
 		],
 		"model": "%v",
+                "assistant_id": "%v",
 		"presence_penalty": 0,
 		"stream": true
 	}
-	`, params.PrevMessages, string(safeInput), model))
+	`, params.PrevMessages, string(safeInput), model, assistant_id))
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
@@ -62,6 +68,8 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 	// Setting all the required headers
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("OpenAI-Beta", "assistants=v2")
+	req.Header.Set("AssistantID", "asst_GHDfhv0nft8d6MAEWVgCGsr3")
 
 	// Return response
 	return (client.Do(req))
