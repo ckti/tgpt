@@ -36,16 +36,6 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 		url = os.Getenv("OPENAI_URL")
 	}
 
-	temperature := "0.5"
-	if params.Temperature != "" {
-		temperature = params.Temperature
-	}
-
-	top_p := "0.5"
-	if params.Top_p != "" {
-		top_p = params.Top_p
-	}
-
 	safeInput, _ := json.Marshal(input)
 
 	var data = strings.NewReader(fmt.Sprintf(`{
@@ -59,11 +49,9 @@ func NewRequest(input string, params structs.Params) (*http.Response, error) {
 		],
 		"model": "%v",
 		"presence_penalty": 0,
-		"stream": true,
-		"temperature": %v,
-		"top_p": %v
+		"stream": true
 	}
-	`, params.PrevMessages, string(safeInput), model, temperature, top_p))
+	`, params.PrevMessages, string(safeInput), model))
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
